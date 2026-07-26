@@ -116,15 +116,6 @@
             50% { opacity: 0.5; }
         }
         
-        .timeline-line {
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, #2dd4bf, #0d9488);
-        }
-        
         .section-divider {
             height: 1px;
             background: linear-gradient(to right, transparent, #2dd4bf, transparent);
@@ -139,6 +130,7 @@
         .glow-btn {
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
         .glow-btn::before {
             content: '';
@@ -162,9 +154,44 @@
         .mobile-menu.open {
             transform: translateX(0);
         }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #162d4a;
+            border: 1px solid #2dd4bf;
+            color: #2dd4bf;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 40px rgba(45, 212, 191, 0.2);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body class="bg-navy-900 text-gray-100 overflow-x-hidden">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span id="toastMessage">Email copied to clipboard!</span>
+    </div>
 
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-navy-900/90 backdrop-blur-md border-b border-teal-500/20">
@@ -218,7 +245,7 @@
                 Hi, I'm <span class="gradient-text">Aidan Suraj</span>
             </h1>
             <p class="fade-in text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Motivated secondary school student with strong communication, teamwork, and problem-solving skills. 
+                Motivated secondary school graduate with strong communication, teamwork, and problem-solving skills. 
                 Seeking an entry-level position to provide excellent customer service and gain valuable work experience.
             </p>
             <div class="fade-in flex flex-col sm:flex-row gap-4 justify-center">
@@ -255,7 +282,7 @@
                     <div class="bg-navy-800 rounded-2xl p-8 border border-teal-500/20">
                         <h3 class="text-xl font-semibold mb-4 text-teal-400">Professional Summary</h3>
                         <p class="text-gray-300 leading-relaxed mb-6">
-                            Motivated secondary school student awaiting CSEC results with strong communication, teamwork, and problem-solving skills. Completed digital skills training through SAGICOR and developed research, organization, and presentation abilities through CSEC School-Based Assessments.
+                            Motivated secondary school graduate with strong communication, teamwork, and problem-solving skills. Completed digital skills training through SAGICOR and developed research, organization, and presentation abilities through CSEC School-Based Assessments.
                         </p>
                         <p class="text-gray-300 leading-relaxed">
                             Dependable, eager to learn, and seeking an entry-level position where I can provide excellent customer service and gain valuable work experience.
@@ -264,7 +291,7 @@
                 </div>
                 <div class="fade-in-right grid grid-cols-2 gap-4">
                     <div class="card-hover bg-navy-800 rounded-xl p-6 border border-teal-500/20 text-center">
-                        <div class="text-3xl font-bold gradient-text mb-2">8+</div>
+                        <div class="text-3xl font-bold gradient-text mb-2">8</div>
                         <div class="text-sm text-gray-400">CSEC Subjects</div>
                     </div>
                     <div class="card-hover bg-navy-800 rounded-xl p-6 border border-teal-500/20 text-center">
@@ -277,7 +304,7 @@
                     </div>
                     <div class="card-hover bg-navy-800 rounded-xl p-6 border border-teal-500/20 text-center">
                         <div class="text-3xl font-bold gradient-text mb-2">2026</div>
-                        <div class="text-sm text-gray-400">Expected Graduation</div>
+                        <div class="text-sm text-gray-400">Graduated</div>
                     </div>
                 </div>
             </div>
@@ -305,8 +332,7 @@
                         </div>
                         <div>
                             <h3 class="text-xl font-semibold mb-1">Couva East Secondary School</h3>
-                            <p class="text-teal-400 text-sm">CSEC Programme — Results Pending</p>
-                            <p class="text-gray-400 text-sm">Expected Completion: 2026</p>
+                            <p class="text-teal-400 text-sm">CSEC Programme — Graduated 2026</p>
                         </div>
                     </div>
                     <div class="space-y-2">
@@ -538,7 +564,7 @@
                         </svg>
                     </div>
                     <h4 class="font-semibold mb-1">Phone</h4>
-                    <p class="text-teal-400 text-sm">+1 (868) 793-4585</p>
+                    <a href="tel:+18687934585" class="text-teal-400 text-sm hover:underline">+1 (868) 793-4585</a>
                 </div>
                 <div class="card-hover bg-navy-800 rounded-xl p-6 border border-teal-500/20 text-center">
                     <div class="w-12 h-12 bg-teal-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -562,12 +588,12 @@
             </div>
             <div class="fade-in text-center">
                 <p class="text-gray-400 text-sm mb-4">References available upon request</p>
-                <a href="mailto:211caidansuraj@gmail.com" class="glow-btn inline-flex items-center gap-2 px-8 py-3 bg-teal-500 text-navy-900 font-semibold rounded-full hover:bg-teal-400 transition-colors">
+                <button id="emailBtn" class="glow-btn inline-flex items-center gap-2 px-8 py-3 bg-teal-500 text-navy-900 font-semibold rounded-full hover:bg-teal-400 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
-                    Send Me an Email
-                </a>
+                    <span id="emailBtnText">Send Me an Email</span>
+                </button>
             </div>
         </div>
     </section>
@@ -628,6 +654,42 @@
                 nav.classList.remove('shadow-lg');
                 nav.style.background = 'rgba(10, 22, 40, 0.9)';
             }
+        });
+
+        // Email button - copies to clipboard and shows toast
+        const emailBtn = document.getElementById('emailBtn');
+        const emailBtnText = document.getElementById('emailBtnText');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const emailAddress = '211caidansuraj@gmail.com';
+
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        emailBtn.addEventListener('click', () => {
+            // Copy email to clipboard
+            navigator.clipboard.writeText(emailAddress).then(() => {
+                showToast('Email copied to clipboard!');
+                emailBtnText.textContent = 'Copied!';
+                setTimeout(() => {
+                    emailBtnText.textContent = 'Send Me an Email';
+                }, 2000);
+            }).catch(() => {
+                // Fallback: try to open mailto
+                window.location.href = 'mailto:' + emailAddress;
+            });
+
+            // Also try to open mailto as a secondary action
+            setTimeout(() => {
+                const mailtoLink = document.createElement('a');
+                mailtoLink.href = 'mailto:' + emailAddress;
+                mailtoLink.click();
+            }, 300);
         });
 
         // Trigger initial animations
