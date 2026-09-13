@@ -1,25 +1,84 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  *  AIDAN SURAJ — CV / PORTFOLIO SITE  ·  single-file React component
- *  Revision F — consolidated course register, CO-OP named, prerequisites gone
+ *  Revision G — GitHub Pages hardening (static-host safe, base-path immune)
  * ═══════════════════════════════════════════════════════════════════════════
  *
- *  ▸ CHANGELOG (client instructions → implementation)
- *    1. Prerequisites REMOVED entirely — data fields, disclosure panels and the
- *       "Show prerequisites" control are gone. Course rows are now static.
- *    2. COOP2004 removed from the course register. The CO-OP internship itself
- *       is NOT lost: it is stated as experience — "CO-OP internship completed
- *       with CARIB (subsidiary of ANSA McAL)" — surfaced in the UTT card
- *       footer, the Contact record grid, the Profile intent copy, the hero
- *       summary and the SEO description.
- *    3. Course register CONSOLIDATED per instruction: sequenced courses are
- *       collapsed into single entries ("Mathematics for Technicians I, II &
- *       III", "Mechanical Engineering Design I & II", "Plant Technology I &
- *       II"); courses that occur only once keep their own line. 24 courses
- *       render as 20 register lines, with a note explaining the consolidation.
- *    4. Employment-target ambiguity is UNCHANGED (sector-level only). Naming
- *       CARIB applies to the completed internship only, exactly as instructed.
- *    5. "CO-OP host" removed from SOURCE_GAPS — it is no longer unknown.
+ *  ▸ GITHUB PAGES DEPLOYMENT (static SPA — no server, no router, no rewrites)
+ *    This component is a single-page app with hash-only deep links, zero local
+ *    assets and CDN-hosted fonts, so the host needs to do nothing beyond
+ *    static file serving. Ship it with exactly three repo files:
+ *
+ *    1) vite.config.js   ← relative base ⇒ works on user.github.io AND /repo/
+ *    ───────────────────────────────────────────────────────────────────────
+ *      import { defineConfig } from "vite";
+ *      import react from "@vitejs/plugin-react";
+ *
+ *      export default defineConfig({
+ *        plugins: [react()],
+ *        base: "./",                       // critical for project Pages paths
+ *        build: { outDir: "dist", assetsDir: "assets", cssCodeSplit: false },
+ *      });
+ *    ───────────────────────────────────────────────────────────────────────
+ *
+ *    2) .github/workflows/deploy.yml   ← official Pages actions, pinned majors
+ *    ───────────────────────────────────────────────────────────────────────
+ *      name: Deploy to GitHub Pages
+ *      on:
+ *        push:
+ *          branches: [main]
+ *        workflow_dispatch:
+ *      permissions:
+ *        contents: read
+ *        pages: write
+ *        id-token: write
+ *      concurrency:
+ *        group: pages
+ *        cancel-in-progress: true
+ *      jobs:
+ *        build:
+ *          runs-on: ubuntu-latest
+ *          steps:
+ *            - uses: actions/checkout@v4
+ *            - uses: actions/setup-node@v4
+ *              with:
+ *                node-version: 20
+ *                cache: npm            # requires package-lock.json committed
+ *            - run: npm ci --no-audit --no-fund
+ *            - run: npm run build
+ *            - uses: actions/configure-pages@v4
+ *            - uses: actions/upload-pages-artifact@v3
+ *              with:
+ *                path: dist
+ *        deploy:
+ *          needs: build
+ *          runs-on: ubuntu-latest
+ *          environment:
+ *            name: github-pages
+ *            url: ${{ steps.pages.outputs.page_url }}
+ *          steps:
+ *            - id: pages
+ *              uses: actions/deploy-pages@v4
+ *    ───────────────────────────────────────────────────────────────────────
+ *
+ *    3) Repo settings: Settings → Pages → Build and deployment →
+ *       Source: “GitHub Actions”. No custom 404.html and no SPA fallback are
+ *       required, because every navigation target is a hash (#profile,
+ *       #education …) resolved client-side after first paint.
+ *
+ *  ▸ PAGES-SAFETY AUDIT OF THIS FILE (what was changed in Revision G)
+ *    · history.replaceState is now guarded to http(s) protocols AND wrapped in
+ *      try/catch — hash persistence degrades gracefully on file:// previews
+ *      and can never throw on a Pages sub-path.
+ *    · canonical <link> + og:url are derived from window.location at runtime,
+ *      so they are correct on user.github.io and on /repo/ without a rebuild.
+ *      The Vercel portfolio URL remains only as sameAs / a visible channel.
+ *    · no fetch(), no env vars, no secrets, no service worker → nothing for a
+ *      static host to proxy, cache-bust or CORS-block.
+ *    · fonts load from absolute https CDN URLs → immune to `base` misconfig.
+ *    · clipboard writes keep a non-secure-context fallback → works anywhere.
+ *    · localStorage access is try/catch wrapped → private-mode safe.
+ *    · zero local asset references → no 404s from a missing base path.
  *
  *  ▸ SOURCE OF TRUTH
  *    Personal data originates from "Aidan_Suraj_CV.pdf" plus the client's
@@ -27,15 +86,19 @@
  *    `ADDENDUM` and `UTT_REGISTER`. Anything still unknown is surfaced in
  *    `SOURCE_GAPS` rather than fabricated.
  *
- *  ▸ VERIFIED DEPENDENCIES (checked on npm — no guessed package names)
- *      react         ^18   https://www.npmjs.com/package/react
- *      react-dom     ^18   https://www.npmjs.com/package/react-dom
- *      framer-motion ^11   https://www.npmjs.com/package/framer-motion
- *      tailwindcss   Play CDN → https://cdn.tailwindcss.com
+ *  ▸ VERIFIED DEPENDENCIES (checked on npm / GitHub Marketplace)
+ *      react            ^18   https://www.npmjs.com/package/react
+ *      react-dom        ^18   https://www.npmjs.com/package/react-dom
+ *      framer-motion    ^11   https://www.npmjs.com/package/framer-motion
+ *      vite             ^5    https://www.npmjs.com/package/vite
+ *      @vitejs/plugin-react ^4 https://www.npmjs.com/package/@vitejs/plugin-react
+ *      tailwindcss (Play CDN) https://cdn.tailwindcss.com
+ *      actions/checkout@v4, actions/setup-node@v4, actions/configure-pages@v4,
+ *      actions/upload-pages-artifact@v3, actions/deploy-pages@v4
  *    Webfonts are self-hosted via the fontsource jsDelivr CDN and injected at
  *    runtime by <AppStyles /> (no third-party font tracker, no Google Fonts).
  *
- *  ▸ REQUIRED index.html SCAFFOLD
+ *  ▸ REQUIRED index.html SCAFFOLD (commit at repo root)
  *  ─────────────────────────────────────────────────────────────────────────
  *  <!doctype html>
  *  <html lang="en" data-theme="dark">
@@ -64,6 +127,12 @@
  *      <script type="module" src="/src/main.jsx"></script>
  *    </body>
  *  </html>
+ *  ─────────────────────────────────────────────────────────────────────────
+ *  src/main.jsx:
+ *    import React from "react";
+ *    import { createRoot } from "react-dom/client";
+ *    import App from "./App.jsx";
+ *    createRoot(document.getElementById("root")).render(<App />);
  *  ─────────────────────────────────────────────────────────────────────────
  *
  *  ▸ SECURITY POSTURE
@@ -597,14 +666,26 @@ async function copyToClipboard(value) {
   }
 }
 
-/** Smooth in-page navigation honouring reduced-motion + the fixed header. */
+/**
+ * Smooth in-page navigation honouring reduced-motion + the fixed header.
+ * Hash persistence is guarded: on non-http(s) origins (e.g. a local file://
+ * preview) replaceState can throw, and on GitHub Pages sub-paths we must never
+ * rewrite the pathname — hash-only updates are the safe operation.
+ */
 function scrollToSection(id) {
   const el = document.getElementById(id);
   if (!el) return;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const top = el.getBoundingClientRect().top + window.scrollY - 78;
   window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
-  if (history.replaceState) history.replaceState(null, "", `#${id}`);
+  try {
+    const protocol = window.location.protocol;
+    if ((protocol === "https:" || protocol === "http:") && window.history.replaceState) {
+      window.history.replaceState(null, "", `#${id}`);
+    }
+  } catch {
+    /* shareable URL is a nicety, never a failure mode */
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -2368,7 +2449,7 @@ function Footer() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   9. HEAD / SEO — title, meta, Open Graph, JSON-LD (built from frozen data)
+   9. HEAD / SEO — runtime-derived URLs so Pages sub-paths are always correct
    ═══════════════════════════════════════════════════════════════════════════ */
 
 function useSeoHead() {
@@ -2384,6 +2465,18 @@ function useSeoHead() {
       node.setAttribute("content", value);
     };
 
+    /**
+     * Pages-safe canonical URL: derived from the live location, so the same
+     * build is correct on https://user.github.io/ and on
+     * https://user.github.io/repo/ without recompiling. Hash is stripped.
+     */
+    let pageUrl = "";
+    try {
+      pageUrl = `${window.location.origin}${window.location.pathname}`;
+    } catch {
+      pageUrl = CV.contact.portfolioUrl; // unreachable in browsers; belt & braces
+    }
+
     const description =
       `${CV.name.first} ${CV.name.last} — Mechanical Engineering programme completed at the ` +
       `University of Trinidad and Tobago (UTT): ${TOTAL_COURSES} courses, plus a CO-OP internship ` +
@@ -2397,10 +2490,20 @@ function useSeoHead() {
     upsertMeta("name", "author", `${CV.name.first} ${CV.name.last}`);
     upsertMeta("name", "robots", "index,follow");
     upsertMeta("property", "og:type", "profile");
+    upsertMeta("property", "og:site_name", `${CV.name.first} ${CV.name.last} — CV`);
     upsertMeta("property", "og:title", `${CV.name.first} ${CV.name.last} — CV`);
     upsertMeta("property", "og:description", description);
-    upsertMeta("property", "og:url", CV.contact.portfolioUrl);
+    upsertMeta("property", "og:url", pageUrl);
     upsertMeta("name", "theme-color", "#0A0C10");
+
+    // Canonical link — upserted, never duplicated across hot reloads.
+    let canonical = document.head.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = pageUrl;
 
     // Structured data: JSON serialisation of frozen local constants only.
     // The future-employment target stays sector-level (client instruction);
@@ -2411,7 +2514,7 @@ function useSeoHead() {
       name: `${CV.name.first} ${CV.name.last}`,
       email: `mailto:${CV.contact.email}`,
       telephone: CV.contact.phoneHref.replace("tel:", ""),
-      url: CV.contact.portfolioUrl,
+      url: pageUrl,
       sameAs: [CV.contact.portfolioUrl, CV.contact.instagramUrl],
       address: {
         "@type": "PostalAddress",
@@ -2483,7 +2586,9 @@ export default function App() {
     setTheme((current) => (current === "dark" ? "light" : "dark"));
   }, []);
 
-  // Deep-link support: honour an incoming #hash on first paint.
+  // Deep-link support: honour an incoming #hash on first paint. Hash-only
+  // routing means GitHub Pages never sees an unknown path → no 404 handling
+  // or SPA fallback file is required on the host.
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");
     if (hash && NAV.some((item) => item.id === hash)) {
