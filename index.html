@@ -4,6 +4,7 @@
 <!--
   ═══════════════════════════════════════════════════════════════════════════
   AIDAN SURAJ — CV / PORTFOLIO · standalone index.html (ZERO-BUILD)
+  Revision H — the portfolio link is GONE: this deployment IS the portfolio
   ═══════════════════════════════════════════════════════════════════════════
 
   WHY THIS FILE EXISTS
@@ -11,6 +12,13 @@
     browser print the raw text instead of rendering a page. THIS file is the
     runnable page: React 18 + Babel are loaded from CDN and the entire app is
     compiled in-browser, so there is NO build step and NO node_modules.
+
+  REVISION H CHANGE
+    Every reference to the old portfolio URL (header button, hero action,
+    contact channel, footer link, JSON-LD sameAs, noscript fallback and the
+    data-layer constant) has been removed. This site is now the canonical
+    portfolio; the only external profiles left are Instagram (social) and the
+    mailto:/tel: channels.
 
   HOW TO USE
     · Local:  double-click this file. It renders immediately.
@@ -63,7 +71,6 @@
   "email": "mailto:211caidansuraj@gmail.com",
   "telephone": "+18687934585",
   "sameAs": [
-    "https://portfolio-lubbluft1.vercel.app/",
     "https://www.instagram.com/shehatesaidan/"
   ],
   "address": {
@@ -264,7 +271,7 @@ body{
 <div id="root"></div>
 <noscript>
   <h1>Aidan Suraj</h1>
-  <p>Mechanical Engineering programme completed at the University of Trinidad and Tobago (UTT) — 24 courses plus a CO-OP internship with CARIB. CSEC results obtained, Couva East Secondary School, 2026. SAGICOR Training Program, 2021. Edinburgh Village, Chaguanas. Email 211caidansuraj@gmail.com · Phone +1 (868) 793-4585 · Portfolio portfolio-lubbluft1.vercel.app · Instagram @shehatesaidan. References available upon request. (Enable JavaScript for the interactive version.)</p>
+  <p>Mechanical Engineering programme completed at the University of Trinidad and Tobago (UTT) — 24 courses plus a CO-OP internship with CARIB. CSEC results obtained, Couva East Secondary School, 2026. SAGICOR Training Program, 2021. Edinburgh Village, Chaguanas. Email 211caidansuraj@gmail.com · Phone +1 (868) 793-4585 · Instagram @shehatesaidan. References available upon request. (Enable JavaScript for the interactive version.)</p>
 </noscript>
 
 <!-- Runtime: React UMD + in-browser Babel. No build step required. -->
@@ -275,6 +282,8 @@ body{
 <script type="text/babel" data-presets="react">
 /* ═══════════════════════════════════════════════════════════════════════════
    1. DATA LAYER — Aidan_Suraj_CV.pdf + client addendum + UTT course table
+   NOTE: no portfolio URL exists in this layer. This deployment is the
+   portfolio; the old external link was removed at the client's instruction.
    ═══════════════════════════════════════════════════════════════════════════ */
 const { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } = React;
 
@@ -285,8 +294,6 @@ const CV = Object.freeze({
     phoneDisplay: "+1 (868) 793-4585",
     phoneHref: "tel:+18687934585",
     location: "Edinburgh Village, Chaguanas",
-    portfolioUrl: "https://portfolio-lubbluft1.vercel.app/",
-    portfolioLabel: "portfolio-lubbluft1.vercel.app",
     instagramHandle: "@shehatesaidan",
     instagramUrl: "https://www.instagram.com/shehatesaidan/",
   }),
@@ -373,7 +380,7 @@ const ADDENDUM = Object.freeze({
   }),
   internship: Object.freeze({ label: "CO-OP Internship", host: "CARIB", parent: "Subsidiary of ANSA McAL", status: "Completed" }),
   summary: "Mechanical Engineering programme completed at the University of Trinidad and Tobago — twenty-four courses across the taught terms, closing with a CO-OP internship at CARIB — on top of CSEC results obtained from Couva East Secondary School. Pairs a technical grounding in mechanics, materials, and engineering design with SAGICOR digital-skills training and the research discipline built through school-based assessments. Open to opportunities.",
-  profileLead: "Taught to draw, measure, and justify an answer before being taught to engineer. Eight CSEC subjects spanning mathematics, the sciences, language, and technical drawing produced the working habits — research, documentation, precision under deadline — that carried through the full Mechanical Engineering programme at UTT: twenty-four courses from programming and engineering graphics to machine dynamics and design II, every one of them completed, plus a CO-OP internship on a real production floor at CARIB. Underneath sits digital-skills training from SAGICOR — documents, spreadsheets, decks, graphics, web, and a portfolio site built from scratch. Dependable, quick to learn, and ready to be useful.",
+  profileLead: "Taught to draw, measure, and justify an answer before being taught to engineer. Eight CSEC subjects spanning mathematics, the sciences, language, and technical drawing produced the working habits — research, documentation, precision under deadline — that carried through the full Mechanical Engineering programme at UTT: twenty-four courses from programming and engineering graphics to machine dynamics and design II, every one of them completed, plus a CO-OP internship on a real production floor at CARIB. Underneath sits digital-skills training from SAGICOR — documents, spreadsheets, decks, graphics, web, and this very site, designed and built from scratch. Dependable, quick to learn, and ready to be useful.",
   intentLead: "CSEC results in hand, the UTT programme finished, and a CO-OP internship with CARIB already logged — so the practical hours continue from here. Open to the right opportunity in a technical or industrial environment. The shortlist is specific. Ask, and I will say exactly where.",
   contactLead: "Pick a channel below; direct is fastest. The full record sits above the channel list, and if the question on your mind is where I am aiming next — ask. That part is a conversation, not a form field.",
   statusLine: "Open to the right opportunity",
@@ -744,10 +751,10 @@ function Header(props) {
               title={props.theme === "dark" ? "Light mode" : "Dark mode"}>
               <Icon name={props.theme === "dark" ? "sun" : "moon"} size={15} />
             </button>
-            <a href={CV.contact.portfolioUrl} target="_blank" rel="noopener noreferrer"
+            <a href={CV.contact.instagramUrl} target="_blank" rel="noopener noreferrer"
               className="hidden h-9 items-center gap-2 border px-4 f-mono text-[10.5px] uppercase tracking-[.18em] transition-colors duration-300 hover:border-[var(--amber)] hover:text-[var(--amber)] sm:inline-flex"
               style={{ borderColor: "var(--line)", color: "var(--ink-2)" }}>
-              Portfolio <Icon name="external" size={13} />
+              Instagram <Icon name="external" size={13} />
             </a>
             <button type="button" onClick={() => setOpen(!open)} className="grid h-9 w-9 place-items-center border lg:hidden"
               style={{ borderColor: "var(--line)", color: "var(--ink-2)" }}
@@ -837,7 +844,7 @@ function Hero() {
             <p className="f-mono text-[11px] uppercase tracking-[.22em] text-[var(--ink-2)]">{TOTAL_COURSES} courses · all completed</p>
           </Reveal>
 
-          <Reveal delay={1} className="mt-7 max-w-[58ch] border-l pl-5 text-[15.5px] leading-[1.78] text-[var(--ink-2)]" >
+          <Reveal delay={1} className="mt-7 max-w-[58ch] border-l pl-5 text-[15.5px] leading-[1.78] text-[var(--ink-2)]">
             <p className="m-0" style={{ borderColor: "var(--line)" }}>{ADDENDUM.summary}</p>
           </Reveal>
 
@@ -846,7 +853,9 @@ function Hero() {
             <ActionButton onClick={onCopy} ariaLabel={"Copy email address " + CV.contact.email}>
               <Icon name={copied ? "check" : "copy"} size={14} />{copied ? "Copied" : "Copy email"}
             </ActionButton>
-            <ActionButton variant="ghost" href={CV.contact.portfolioUrl} external ariaLabel="Open portfolio site in a new tab">Portfolio <Icon name="external" size={13} /></ActionButton>
+            <ActionButton variant="ghost" href={CV.contact.instagramUrl} external ariaLabel={"Open Instagram profile " + CV.contact.instagramHandle + " in a new tab"}>
+              Instagram <Icon name="external" size={13} />
+            </ActionButton>
             <span role="status" aria-live="polite" className="sr-only">{copied ? "Email address copied to clipboard." : ""}</span>
           </Reveal>
         </div>
@@ -997,7 +1006,7 @@ function EducationSection() {
     <section id="education" className="relative scroll-mt-24 border-t py-20 md:py-28" style={{ borderColor: "var(--line)" }} aria-labelledby="education-h">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <SectionHeader index="02" kicker="Academic record" title="Education" id="education-h" />
-        <ol className="m-0 relative list-none space-y-10 p-0 pl-6 sm:space-y-12" style={{}}>
+        <ol className="m-0 relative list-none space-y-10 p-0 pl-6 sm:space-y-12">
           <Reveal as="li" className="m-0 relative">
             <span className="node node-live absolute top-2 -left-6" aria-hidden="true"></span>
             <article className="sheet brk overflow-hidden">
@@ -1032,6 +1041,9 @@ function EducationSection() {
                   </Reveal>
                 ))}
               </ul>
+              <p className="m-0 border-t px-5 py-3 text-[12px] leading-[1.6] text-[var(--muted)] md:px-7" style={{ borderColor: "var(--line-soft)" }}>
+                Sequenced courses are consolidated into a single line — e.g. Mathematics for Technicians I, II &amp; III. Course codes are listed beside each entry.
+              </p>
               <div className="flex flex-wrap items-center justify-between gap-3 border-t px-5 py-4 md:px-7" style={{ borderColor: "var(--line)", background: "var(--surface-2)" }}>
                 <span className="flex items-center gap-3">
                   <span className="grid h-7 w-7 place-items-center border" style={{ borderColor: "var(--amber)", color: "var(--amber)" }} aria-hidden="true"><Icon name="check" size={12} /></span>
@@ -1098,7 +1110,7 @@ function TrainingSection() {
                 <span className="border px-2.5 py-1 f-mono text-[11px] tracking-[.14em]" style={{ borderColor: "var(--amber)", color: "var(--amber)" }}>Completed {CV.training.completed}</span>
               </div>
               <p className="mt-6 mb-0 text-[14px] leading-[1.7] text-[var(--muted)]">
-                Eight modules spanning office software, digital creation, spoken communication, and language study — the foundation of the portfolio site and the graphics work that followed.
+                Eight modules spanning office software, digital creation, spoken communication, and language study — the foundation of the graphics work and of this site, which was designed and built from scratch.
               </p>
             </div>
           </Reveal>
@@ -1242,11 +1254,12 @@ function ContactSection() {
     timer.current = window.setTimeout(() => setStatus("idle"), 2400);
   }, []);
 
+  /* Channels only: email, phone, Instagram. The old portfolio URL is gone —
+     this page IS the portfolio, so linking to it would be self-referential. */
   const channels = [
     { label: "Email", value: CV.contact.email, href: "mailto:" + CV.contact.email, icon: "mail" },
     { label: "Phone", value: CV.contact.phoneDisplay, href: CV.contact.phoneHref, icon: "phone" },
     { label: "Instagram", value: CV.contact.instagramHandle, href: CV.contact.instagramUrl, icon: "camera", external: true },
-    { label: "Portfolio", value: CV.contact.portfolioLabel, href: CV.contact.portfolioUrl, icon: "external", external: true },
   ];
 
   return (
@@ -1335,7 +1348,6 @@ function Footer() {
           <span className="lbl">© {year}</span>
         </div>
         <div className="flex flex-wrap items-center gap-6">
-          <a className="ul f-mono text-[11px] uppercase tracking-[.18em] text-[var(--muted)] hover:text-[var(--ink)]" href={CV.contact.portfolioUrl} target="_blank" rel="noopener noreferrer">Portfolio</a>
           <a className="ul f-mono text-[11px] uppercase tracking-[.18em] text-[var(--muted)] hover:text-[var(--ink)]" href={CV.contact.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram</a>
           <a className="ul f-mono text-[11px] uppercase tracking-[.18em] text-[var(--muted)] hover:text-[var(--ink)]" href={"mailto:" + CV.contact.email}>Email</a>
           <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
